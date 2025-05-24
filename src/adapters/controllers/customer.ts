@@ -3,10 +3,12 @@ import { CreateCustomerUseCase } from '../../application/use-cases/create-custom
 import { CreateCustomerDTO } from '../../application/dtos/create-customer';
 import { UpdateCustomerUseCase } from '../../application/use-cases/update-customer';
 import { UpdateCustomerDTO } from '../../application/dtos/update-customer';
+import { GetCustomerUseCase } from '../../application/use-cases/get-customer';
 
 export function customerRouter(
   createUC: CreateCustomerUseCase,
   updateUC: UpdateCustomerUseCase,
+  getUC: GetCustomerUseCase,
 ): Router {
   const router = Router();
 
@@ -31,6 +33,19 @@ export function customerRouter(
       }
       res.status(200).json(updated);
       return;
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.get('/:id', async (req, res, next) => {
+    try {
+      const customer = await getUC.execute(req.params.id);
+      if (!customer) {
+        res.status(404).json({ message: 'Cliente não encontrado' });
+        return;
+      }
+      res.json(customer);
     } catch (err) {
       next(err);
     }

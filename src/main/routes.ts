@@ -1,5 +1,9 @@
 import express, { Application } from 'express';
-import { makeCreateCustomer, makeUpdateCustomerUseCase } from './factories/customer';
+import {
+  makeCreateCustomer,
+  makeGetCustomerUseCase,
+  makeUpdateCustomerUseCase,
+} from './factories/customer';
 import { customerRouter } from '../adapters/controllers/customer';
 
 export async function registerRoutes(app: Application): Promise<void> {
@@ -7,6 +11,7 @@ export async function registerRoutes(app: Application): Promise<void> {
 
   const createUC = await makeCreateCustomer();
   const updateUC = await makeUpdateCustomerUseCase();
+  const getUC = await makeGetCustomerUseCase();
 
-  app.use('/customers', customerRouter(createUC, updateUC));
+  app.use('/customers', customerRouter(createUC, updateUC, getUC));
 }
