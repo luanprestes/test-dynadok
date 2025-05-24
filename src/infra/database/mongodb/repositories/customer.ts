@@ -1,32 +1,17 @@
-import { CreateCustomerDTO } from '../../../../application/dtos/create-customer';
-import { UpdateCustomerDTO } from '../../../../application/dtos/update-customer';
 import { Customer } from '../../../../domain/entities/customer';
 import { ICustomerRepository } from '../../../../domain/respositories/customer';
 import { CustomerDocument, CustomerModel } from '../schemas/costumer';
+import { BaseRepository } from './base';
 
-export class CustomerRepostoryMongoDB implements ICustomerRepository {
-  async findById(id: string): Promise<Customer | null> {
-    const doc = await CustomerModel.findById(id);
-    return doc ? this.toDomain(doc) : null;
+export class CustomerRepositoryMongoDB
+  extends BaseRepository<CustomerDocument, Customer>
+  implements ICustomerRepository
+{
+  constructor() {
+    super(CustomerModel);
   }
 
-  async findAll(): Promise<Customer[]> {
-    const docs = await CustomerModel.find();
-    return docs.map((d) => this.toDomain(d));
-  }
-
-  async update(id: string, data: UpdateCustomerDTO): Promise<Customer | null> {
-    const doc = await CustomerModel.findByIdAndUpdate(id, data, { new: true });
-    if (!doc) return null;
-    return this.toDomain(doc);
-  }
-
-  async create(data: CreateCustomerDTO): Promise<Customer> {
-    const doc = await CustomerModel.create(data);
-    return this.toDomain(doc);
-  }
-
-  private toDomain(doc: CustomerDocument): Customer {
+  protected toDomain(doc: CustomerDocument): Customer {
     return {
       id: doc.id,
       name: doc.name,

@@ -1,8 +1,10 @@
-import mongoose, { Model, Schema } from 'mongoose';
-import { Customer } from '../../../../domain/entities/customer';
-
-export interface CustomerDocument extends Customer, Document {
-  toObject(): unknown;
+import { Schema, model, Document, Model } from 'mongoose';
+export interface CustomerDocument extends Document {
+  name: string;
+  email: string;
+  phone: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const CustomerSchema = new Schema<CustomerDocument>(
@@ -14,5 +16,7 @@ const CustomerSchema = new Schema<CustomerDocument>(
   { timestamps: true },
 );
 
-export const CustomerModel: Model<CustomerDocument> =
-  mongoose.models['Customer'] || mongoose.model<CustomerDocument>('Customer', CustomerSchema);
+export const CustomerModel: Model<CustomerDocument> = model<CustomerDocument>(
+  'Customer',
+  CustomerSchema,
+);
