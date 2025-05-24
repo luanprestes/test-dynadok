@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - '${PORT}:3000'
+    depends_on:
+      - mongo
+      - redis
+      - rabbitmq
+
+  mongo:
+    image: mongo:6
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+volumes:
+  mongo_data:
