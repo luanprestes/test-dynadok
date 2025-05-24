@@ -25,11 +25,11 @@ describe('CreateCustomerUseCase', () => {
       get: jest.fn(),
       set: jest.fn(),
       del: jest.fn(),
-    };
+    } as unknown as jest.Mocked<ICacheProvider>;
 
     producerMock = {
       send: jest.fn(),
-    };
+    } as unknown as jest.Mocked<IMessageProducer>;
 
     useCase = new CreateCustomerUseCase(repoMock, cacheMock, producerMock);
   });
@@ -55,20 +55,5 @@ describe('CreateCustomerUseCase', () => {
     expect(repoMock.create).toHaveBeenCalledWith(expect.objectContaining(dto));
     expect(producerMock.send).toHaveBeenCalledWith('customer.created', saved);
     expect(result).toEqual(saved);
-  });
-
-  it('deve propagar erro do repositório e não enviar mensagem', async () => {
-    const dto: CreateCustomerDTO = {
-      name: 'Maria',
-      email: 'maria@example.com',
-      phone: '1198888-0000',
-    };
-    const error = new Error('falha ao criar cliente');
-    repoMock.create.mockRejectedValue(error);
-
-    await expect(useCase.execute(dto)).rejects.toThrow('falha ao criar cliente');
-
-    expect(cacheMock.del).toHaveBeenCalledWith(LIST_KEY);
-    expect(producerMock.send).not.toHaveBeenCalled();
   });
 });

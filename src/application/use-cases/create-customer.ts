@@ -21,10 +21,8 @@ export class CreateCustomerUseCase {
       await this.cache.del(this.LIST_CACHE_KEY);
     } catch (_) {}
 
-    const saved = this.repository.create(entity as unknown as CreateCustomerDTO);
-
+    const saved = await this.repository.create(entity);
     await this.producer.send('customer.created', saved);
-
     return saved;
   }
 }
