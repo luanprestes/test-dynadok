@@ -1,5 +1,6 @@
 import { Customer, CustomerProps } from '../../domain/entities/customer';
 import { ICacheProvider } from '../../domain/providers/cache';
+import { IMessageProducer } from '../../domain/providers/message';
 import type { ICustomerRepository } from '../../domain/respositories/customer';
 import { CreateCustomerDTO } from '../dtos/create-customer';
 
@@ -9,6 +10,7 @@ export class CreateCustomerUseCase {
   constructor(
     private repository: ICustomerRepository,
     private cache: ICacheProvider,
+    private producer: IMessageProducer,
   ) {}
 
   async execute(data: CreateCustomerDTO) {
@@ -19,6 +21,10 @@ export class CreateCustomerUseCase {
       await this.cache.del(this.LIST_CACHE_KEY);
     } catch (_) {}
 
-    return this.repository.create(entity as unknown as CreateCustomerDTO);
+    const saved = this.repository.create(entity as unknown as CreateCustomerDTO);
+
+    await this.producer.send('customer.created', saved);
+
+    return saved;
   }
 }

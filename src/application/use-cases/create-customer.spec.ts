@@ -1,15 +1,17 @@
 import { Customer } from '../../domain/entities/customer';
 import { ICacheProvider } from '../../domain/providers/cache';
+import { IMessageProducer } from '../../domain/providers/message';
 import { ICustomerRepository } from '../../domain/respositories/customer';
 import { CreateCustomerDTO } from '../dtos/create-customer';
 import { CreateCustomerUseCase } from './create-customer';
 
 describe('CreateCustomerUseCase', () => {
+  const LIST_KEY = 'customers:all';
+
   let repoMock: jest.Mocked<ICustomerRepository>;
   let cacheMock: jest.Mocked<ICacheProvider>;
+  let producerMock: jest.Mocked<IMessageProducer>;
   let useCase: CreateCustomerUseCase;
-
-  const LIST_KEY = 'customers:all';
 
   beforeEach(() => {
     repoMock = {
@@ -25,13 +27,17 @@ describe('CreateCustomerUseCase', () => {
       del: jest.fn(),
     };
 
-    useCase = new CreateCustomerUseCase(repoMock, cacheMock);
+    producerMock = {
+      send: jest.fn(),
+    };
+
+    useCase = new CreateCustomerUseCase(repoMock, cacheMock, producerMock);
   });
 
-  it('deve invalidar cache, criar e retornar o cliente', async () => {
+  it('deve invalidar cache, criar cliente e publicar mensagem', async () => {
     const dto: CreateCustomerDTO = {
       name: 'João Silva',
-      email: 'joao.silva@example.com',
+      email: 'joao@example.com',
       phone: '1199999-0000',
     };
     const now = new Date();
@@ -47,10 +53,11 @@ describe('CreateCustomerUseCase', () => {
 
     expect(cacheMock.del).toHaveBeenCalledWith(LIST_KEY);
     expect(repoMock.create).toHaveBeenCalledWith(expect.objectContaining(dto));
+    expect(producerMock.send).toHaveBeenCalledWith('customer.created', saved);
     expect(result).toEqual(saved);
   });
 
-  it('deve propagar erros do repositório', async () => {
+  it('deve propagar erro do repositório e não enviar mensagem', async () => {
     const dto: CreateCustomerDTO = {
       name: 'Maria',
       email: 'maria@example.com',
@@ -60,6 +67,8 @@ describe('CreateCustomerUseCase', () => {
     repoMock.create.mockRejectedValue(error);
 
     await expect(useCase.execute(dto)).rejects.toThrow('falha ao criar cliente');
+
     expect(cacheMock.del).toHaveBeenCalledWith(LIST_KEY);
+    expect(producerMock.send).not.toHaveBeenCalled();
   });
 });
