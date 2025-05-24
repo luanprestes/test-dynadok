@@ -13,7 +13,10 @@ export class Customer extends BaseEntity {
 
   constructor(props: CustomerProps) {
     super();
-    this.name = props.name;
+    if (!props.name?.trim()) {
+      throw new Error('O nome do cliente é obrigatório.');
+    }
+    this.name = props.name.trim();
     this.email = props.email;
     this.phone = props.phone;
   }

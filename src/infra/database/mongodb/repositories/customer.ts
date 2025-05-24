@@ -11,6 +11,11 @@ export class CustomerRepositoryMongoDB
     super(CustomerModel);
   }
 
+  async findByEmail(email: string): Promise<Customer | null> {
+    const doc = await CustomerModel.find({ email });
+    return doc ? this.toDomain(doc as unknown as CustomerDocument) : null;
+  }
+
   protected toDomain(doc: CustomerDocument): Customer {
     return {
       id: doc.id,
