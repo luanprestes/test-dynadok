@@ -1,5 +1,6 @@
+import { CreateCustomerDTO } from '../../application/dtos/create-customer';
 import type { Customer } from '../entities/customer';
 
 export interface ICustomerRepository {
-  create(data: Omit<Customer, 'id' | 'createdAt' | 'updatedAt'>): Promise<Customer>;
+  create(data: CreateCustomerDTO): Promise<Customer>;
 }

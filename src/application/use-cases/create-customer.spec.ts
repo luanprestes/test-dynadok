@@ -1,6 +1,7 @@
 import { CreateCustomerUseCase } from './create-customer';
 import type { Customer } from '../../domain/entities/customer';
 import type { ICustomerRepository } from '../../domain/respositories/customer';
+import { CreateCustomerDTO } from '../dtos/create-customer';
 
 describe('CreateCustomerUseCase', () => {
   let repositoryMock: jest.Mocked<ICustomerRepository>;
@@ -30,7 +31,7 @@ describe('CreateCustomerUseCase', () => {
 
     repositoryMock.create.mockResolvedValue(savedCustomer);
 
-    const result = await useCase.execute(input);
+    const result = await useCase.execute(input as unknown as CreateCustomerDTO);
 
     expect(repositoryMock.create).toHaveBeenCalledWith(input);
     expect(result).toEqual(savedCustomer);
@@ -45,6 +46,8 @@ describe('CreateCustomerUseCase', () => {
     const error = new Error('falha ao criar cliente');
     repositoryMock.create.mockRejectedValue(error);
 
-    await expect(useCase.execute(input)).rejects.toThrow('falha ao criar cliente');
+    await expect(useCase.execute(input as unknown as CreateCustomerDTO)).rejects.toThrow(
+      'falha ao criar cliente',
+    );
   });
 });

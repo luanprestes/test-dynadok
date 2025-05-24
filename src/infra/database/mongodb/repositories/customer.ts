@@ -1,9 +1,10 @@
+import { CreateCustomerDTO } from '../../../../application/dtos/create-customer';
 import { Customer } from '../../../../domain/entities/customer';
 import { ICustomerRepository } from '../../../../domain/respositories/customer';
 import { CustomerDocument, CustomerModel } from '../schemas/costumer';
 
 export class CustomerRepostoryMongoDB implements ICustomerRepository {
-  async create(data: Omit<Customer, 'id' | 'createdAt' | 'updatedAt'>): Promise<Customer> {
+  async create(data: CreateCustomerDTO): Promise<Customer> {
     const doc = await CustomerModel.create(data);
     return this.toDomain(doc);
   }
