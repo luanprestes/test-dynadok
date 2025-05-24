@@ -3,20 +3,9 @@ import { GetCustomerUseCase } from '../../application/use-cases/get-customer';
 import { ListCustomersUseCase } from '../../application/use-cases/list-customer';
 import { PrintCustomerLogUseCase } from '../../application/use-cases/print-customer-log';
 import { UpdateCustomerUseCase } from '../../application/use-cases/update-customer';
-import { IMessageProducer } from '../../domain/providers/message';
 import { redisCacheProvider } from '../../infra/cache/redis/providers/customer';
 import { CustomerRepostoryMongoDB } from '../../infra/database/mongodb/repositories/customer';
-import { RabbitProducer } from '../../infra/messaging/rabbit/producer';
-
-let producerSingleton: IMessageProducer | null = null;
-
-async function getProducer(): Promise<IMessageProducer> {
-  if (!producerSingleton) {
-    producerSingleton = new RabbitProducer();
-    await (producerSingleton as RabbitProducer).connect();
-  }
-  return producerSingleton;
-}
+import { getProducer } from '../../infra/messaging/rabbit/config';
 
 export async function makeCreateCustomer(): Promise<CreateCustomerUseCase> {
   const repo = new CustomerRepostoryMongoDB();
