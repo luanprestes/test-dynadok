@@ -16,9 +16,9 @@ describe('CreateCustomerUseCase', () => {
 
   it('deve chamar repository.create com os dados corretos e retornar o cliente salvo', async () => {
     const input = {
-      nome: 'João Silva',
+      name: 'João Silva',
       email: 'joao.silva@example.com',
-      telefone: '1199999-0000',
+      phone: '1199999-0000',
     };
     const now = new Date();
     const savedCustomer: Customer = {
@@ -38,9 +38,9 @@ describe('CreateCustomerUseCase', () => {
 
   it('deve propagar erros lançados pelo repositório', async () => {
     const input = {
-      nome: 'Maria Oliveira',
+      name: 'Maria Oliveira',
       email: 'maria.oliveira@example.com',
-      telefone: '1198888-0000',
+      phone: '1198888-0000',
     };
     const error = new Error('falha ao criar cliente');
     repositoryMock.create.mockRejectedValue(error);

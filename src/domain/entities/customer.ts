@@ -1,9 +1,9 @@
 import { BaseEntity } from './base';
 
 export class Customer extends BaseEntity {
-  nome!: string;
+  name!: string;
   email!: string;
-  telefone!: string;
+  phone!: string;
 
   constructor(data: Omit<Customer, keyof BaseEntity>) {
     super();
