@@ -1,8 +1,13 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { CreateCustomerUseCase } from '../../application/use-cases/create-customer';
 import { CreateCustomerDTO } from '../../application/dtos/create-customer';
+import { UpdateCustomerUseCase } from '../../application/use-cases/update-customer';
+import { UpdateCustomerDTO } from '../../application/dtos/update-customer';
 
-export function customerRouter(createUC: CreateCustomerUseCase): Router {
+export function customerRouter(
+  createUC: CreateCustomerUseCase,
+  updateUC: UpdateCustomerUseCase,
+): Router {
   const router = Router();
 
   router.post(
@@ -16,6 +21,20 @@ export function customerRouter(createUC: CreateCustomerUseCase): Router {
       }
     },
   );
+
+  router.put<{ id: string }, any, UpdateCustomerDTO>('/:id', async (req, res, next) => {
+    try {
+      const updated = await updateUC.execute(req.params.id, req.body);
+      if (!updated) {
+        res.status(404).json({ message: 'Cliente não encontrado' });
+        return;
+      }
+      res.status(200).json(updated);
+      return;
+    } catch (err) {
+      next(err);
+    }
+  });
 
   return router;
 }
