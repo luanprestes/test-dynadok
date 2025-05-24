@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "verbatimModuleSyntax": false,
     "outDir": "dist",
     "rootDir": "src",
     "esModuleInterop": true,
@@ -14,8 +15,7 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
-    "useUnknownInCatchVariables": true,
-    "verbatimModuleSyntax": true
+    "useUnknownInCatchVariables": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
