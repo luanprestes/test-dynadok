@@ -1,5 +1,5 @@
 export interface CreateCustomerDTO {
-  nome: string;
+  name: string;
   email: string;
-  telefone: string;
+  phone: string;
 }

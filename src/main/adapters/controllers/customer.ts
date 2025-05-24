@@ -1,14 +1,16 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { CreateCustomerUseCase } from '../../application/use-cases/create-customer';
-import { CreateCustomerDTO } from '../../application/dtos/create-customer';
-import { UpdateCustomerUseCase } from '../../application/use-cases/update-customer';
-import { UpdateCustomerDTO } from '../../application/dtos/update-customer';
-import { GetCustomerUseCase } from '../../application/use-cases/get-customer';
+import { CreateCustomerUseCase } from '../../../application/use-cases/create-customer';
+import { CreateCustomerDTO } from '../../../application/dtos/create-customer';
+import { UpdateCustomerUseCase } from '../../../application/use-cases/update-customer';
+import { UpdateCustomerDTO } from '../../../application/dtos/update-customer';
+import { GetCustomerUseCase } from '../../../application/use-cases/get-customer';
+import { ListCustomersUseCase } from '../../../application/use-cases/list-customer';
 
 export function customerRouter(
   createUC: CreateCustomerUseCase,
   updateUC: UpdateCustomerUseCase,
   getUC: GetCustomerUseCase,
+  listUC: ListCustomersUseCase,
 ): Router {
   const router = Router();
 
@@ -46,6 +48,15 @@ export function customerRouter(
         return;
       }
       res.json(customer);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.get('/', async (req, res, next) => {
+    try {
+      const customers = await listUC.execute();
+      res.json(customers);
     } catch (err) {
       next(err);
     }
