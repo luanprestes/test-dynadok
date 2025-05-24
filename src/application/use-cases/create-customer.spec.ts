@@ -1,15 +1,15 @@
 import { CreateCustomerUseCase } from './create-customer';
 import type { Customer } from '../../domain/entities/customer';
-import type { CustomerRepository } from '../../domain/respositories/customer';
+import type { ICustomerRepository } from '../../domain/respositories/customer';
 
 describe('CreateCustomerUseCase', () => {
-  let repositoryMock: jest.Mocked<CustomerRepository>;
+  let repositoryMock: jest.Mocked<ICustomerRepository>;
   let useCase: CreateCustomerUseCase;
 
   beforeEach(() => {
     repositoryMock = {
       create: jest.fn(),
-    } as unknown as jest.Mocked<CustomerRepository>;
+    } as unknown as jest.Mocked<ICustomerRepository>;
 
     useCase = new CreateCustomerUseCase(repositoryMock);
   });
