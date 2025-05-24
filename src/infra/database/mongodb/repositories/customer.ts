@@ -5,6 +5,16 @@ import { ICustomerRepository } from '../../../../domain/respositories/customer';
 import { CustomerDocument, CustomerModel } from '../schemas/costumer';
 
 export class CustomerRepostoryMongoDB implements ICustomerRepository {
+  async findById(id: string): Promise<Customer | null> {
+    const doc = await CustomerModel.findById(id);
+    return doc ? this.toDomain(doc) : null;
+  }
+
+  async findAll(): Promise<Customer[]> {
+    const docs = await CustomerModel.find();
+    return docs.map((d) => this.toDomain(d));
+  }
+
   async update(id: string, data: UpdateCustomerDTO): Promise<Customer | null> {
     const doc = await CustomerModel.findByIdAndUpdate(id, data, { new: true });
     if (!doc) return null;
