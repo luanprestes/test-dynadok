@@ -50,7 +50,7 @@ src/
 
 ### Rodando via Docker Compose
 
-1. Copie o `.env.example` para `.env` e ajuste variáveis, se necessário.
+1. Copie o `.env.sample` para `.env` e ajuste variáveis, se necessário.
 2. Suba containers:
 
    ```bash
