@@ -25,7 +25,7 @@ export class RabbitConsumer {
   async consume(queueName: string, onMessage: (msg: ConsumeMessage) => void): Promise<void> {
     this.channel.assertQueue(queueName, { durable: true }, (errQ, q) => {
       if (errQ) throw errQ;
-      this.channel.bindQueue(q.queue, RABBIT_EXCH, '', (errB: any) => {
+      this.channel.bindQueue(q.queue, RABBIT_EXCH, '', {}, (errB) => {
         if (errB) throw errB;
         this.channel.consume(q.queue, (msg) => {
           if (msg) {

@@ -12,7 +12,7 @@ export class CustomerRepositoryMongoDB
   }
 
   async findByEmail(email: string): Promise<Customer | null> {
-    const doc = await CustomerModel.find({ email });
+    const doc = await CustomerModel.findOne({ email });
     return doc ? this.toDomain(doc as unknown as CustomerDocument) : null;
   }
 

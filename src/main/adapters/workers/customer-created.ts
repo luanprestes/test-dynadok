@@ -2,9 +2,9 @@ import type { ConsumeMessage } from 'amqplib';
 import { RabbitConsumer } from '../../../infra/messaging/rabbit/consumer';
 import { makePrintLogCustomerUseCase } from '../../factories/customer';
 
-async function startWorker() {
+export async function startWorker() {
   const consumer = new RabbitConsumer();
-  await consumer.connect();
+  await consumer.connect().then((e) => console.log(e));
 
   const printLogUC = await makePrintLogCustomerUseCase();
 
@@ -13,8 +13,3 @@ async function startWorker() {
     await printLogUC.execute(event);
   });
 }
-
-startWorker().catch((err) => {
-  console.error('❌ Worker falhou:', err);
-  process.exit(1);
-});
